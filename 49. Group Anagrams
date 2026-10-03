@@ -1,0 +1,33 @@
+import java.util.*;
+
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+
+        HashMap<String, List<String>> map = new HashMap<>();
+
+        for (String str : strs) {
+
+            int[] count = new int[26];
+
+            // Count each character
+            for (char c : str.toCharArray()) {
+                count[c - 'a']++;
+            }
+
+            // Convert the frequency array into a String key
+            StringBuilder key = new StringBuilder();
+
+            for (int num : count) {
+                key.append(num).append('#');
+            }
+
+            // Create the list if this key doesn't exist
+            map.putIfAbsent(key.toString(), new ArrayList<>());
+
+            // Add the string to its anagram group
+            map.get(key.toString()).add(str);
+        }
+
+        return new ArrayList<>(map.values());
+    }
+}
