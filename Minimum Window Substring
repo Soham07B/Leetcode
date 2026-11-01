@@ -1,0 +1,71 @@
+
+class Solution {
+    public String minWindow(String s, String t) {
+
+        if (t.length() > s.length()) {
+            return "";
+        }
+
+        int[] required = new int[128];
+        int[] window = new int[128];
+
+        // Count the required characters
+        for (char c : t.toCharArray()) {
+            required[c]++;
+        }
+
+        int left = 0;
+        int formed = 0;
+        int requiredCount = t.length();
+
+        int minLength = Integer.MAX_VALUE;
+        int startIndex = 0;
+
+        for (int right = 0; right < s.length(); right++) {
+
+            char current = s.charAt(right);
+
+            // Expand the window
+            window[current]++;
+
+            // Check if this character satisfies a requirement
+            if (required[current] > 0 &&
+                window[current] <= required[current]) {
+
+                formed++;
+            }
+
+            // Window contains all required characters
+            while (formed == requiredCount) {
+
+                // Update the minimum window
+                int currentLength = right - left + 1;
+
+                if (currentLength < minLength) {
+                    minLength = currentLength;
+                    startIndex = left;
+                }
+
+                // Shrink the window
+                char leftChar = s.charAt(left);
+
+                window[leftChar]--;
+
+                // Check if removing this character breaks validity
+                if (required[leftChar] > 0 &&
+                    window[leftChar] < required[leftChar]) {
+
+                    formed--;
+                }
+
+                left++;
+            }
+        }
+
+        if (minLength == Integer.MAX_VALUE) {
+            return "";
+        }
+
+        return s.substring(startIndex, startIndex + minLength);
+    }
+}
